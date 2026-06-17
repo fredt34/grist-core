@@ -64,7 +64,6 @@ export class DocSettingsPage extends Disposable {
   private _timezone = this._docInfo.timezone;
   private _locale: KoSaveableObservable<string> = this._docInfo.documentSettingsJson.prop("locale");
   private _currency: KoSaveableObservable<string | undefined> = this._docInfo.documentSettingsJson.prop("currency");
-  private _customCSS: KoSaveableObservable<string | undefined> = this._docInfo.documentSettingsJson.prop("customCSS");
   private _acceptProposals = Observable.create(
     this,
     Boolean(this._gristDoc.docPageModel.currentDoc.get()?.options?.proposedChanges?.acceptProposals),
@@ -105,13 +104,6 @@ export class DocSettingsPage extends Disposable {
             dom.create(cssCurrencyPicker, fromKo(this._currency), val => this._currency.saveOnly(val),
               { defaultCurrencyLabel: t("Local currency ({{currency}})", { currency: getCurrency(l) }) }),
           ),
-        }),
-        SectionItem({
-          id: "customCSS",
-          name: t("Custom CSS"),
-          description: t("Apply custom styles to this document"),
-          value: dom.create(cssTextArea, fromKo(this._customCSS), val => this._customCSS.saveOnly(val)),
-          disabled: isDocOwner ? false : t("Only available to document owners"),
         }),
         SectionItem({
           id: "templateMode",
@@ -984,18 +976,6 @@ const cssFlex = styled("div", `
   display: flex;
   align-items: center;
   gap: 8px;
-`);
-
-const cssTextArea = styled("textarea", `
-  width: var(--admin-select-width);
-  height: 100px;
-  padding: 5px;
-  font-family: monospace;
-  border: 1px solid ${theme.inputBorder};
-  border-radius: 4px;
-  background: ${theme.inputBg};
-  color: ${theme.lightText};
-  resize: vertical;
 `);
 
 const cssButton = styled(cssSmallButton, `
