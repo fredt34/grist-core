@@ -15,7 +15,7 @@ import { urlState } from "app/client/models/gristUrlState";
 import { KoSaveableObservable } from "app/client/models/modelUtil";
 import { openFilePicker } from "app/client/ui/FileDialog";
 import { buildNotificationsConfig } from "app/client/ui/Notifications";
-import { cssSettingsPage, SectionCard, SectionItem } from "app/client/ui/SettingsLayout";
+import { cssItem, cssSettingsPage, SectionCard, SectionItem } from "app/client/ui/SettingsLayout";
 import { hoverTooltip, showTransientTooltip, withInfoTooltip } from "app/client/ui/tooltips";
 import { bigBasicButton, bigPrimaryButton } from "app/client/ui2018/buttons";
 import { cssRadioCheckboxOptions, labeledSquareCheckbox, radioCheckboxOption } from "app/client/ui2018/checkbox";
@@ -109,17 +109,20 @@ export class DocSettingsPage extends Disposable {
               { defaultCurrencyLabel: t("Local currency ({{currency}})", { currency: getCurrency(l) }) }),
           ),
         }),
-        SectionItem({
-          id: "customCSS",
-          name: t("Custom CSS"),
-          description: t("Apply custom styles to this document"),
-          value: cssTextArea(fromKo(this._customCSS) as Observable<string>, {
+        cssItem(
+          cssCustomCSSRow(
+            cssCustomCSSLabel(t("Custom CSS")),
+            cssCustomCSSDesc(t("Apply custom styles to this document")),
+          ),
+          cssTextArea(fromKo(this._customCSS) as Observable<string>, {
             save: (val: string) => this._customCSS.saveOnly(val),
           },
           { spellcheck: "false", autocorrect: "off", autocomplete: "off" } as any,
+          dom.style("opacity", isDocOwner ? "" : "0.5"),
+          dom.prop("disabled", !isDocOwner),
           ),
-          disabled: isDocOwner ? false : t("Only available to document owners"),
-        }),
+          testId("customCSS"),
+        ),
         SectionItem({
           id: "templateMode",
           name: t("Document type"),
@@ -991,6 +994,27 @@ const cssFlex = styled("div", `
   display: flex;
   align-items: center;
   gap: 8px;
+`);
+
+const cssCustomCSSRow = styled("div", `
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  margin: 0 -8px;
+`);
+
+const cssCustomCSSLabel = styled("div", `
+  font-weight: bold;
+  font-size: ${vars.largeFontSize};
+  padding-left: 24px;
+  margin-right: 14px;
+  min-width: 230px;
+`);
+
+const cssCustomCSSDesc = styled("div", `
+  color: ${theme.lightText};
+  font-size: ${vars.mediumFontSize};
+  margin-right: auto;
 `);
 
 const cssTextArea = styled(textarea, `
