@@ -113,7 +113,9 @@ export class DocSettingsPage extends Disposable {
           description: t("Apply custom styles to this document"),
           value: cssTextArea(fromKo(this._customCSS) as Observable<string>, {
             save: (val: string) => this._customCSS.saveOnly(val),
-          }),
+          },
+          { spellcheck: "false", autocorrect: "off", autocomplete: "off" } as any,
+          ),
           disabled: isDocOwner ? false : t("Only available to document owners"),
         }),
         SectionItem({
@@ -990,8 +992,8 @@ const cssFlex = styled("div", `
 `);
 
 const cssTextArea = styled(textarea, `
-  width: var(--admin-select-width);
-  min-height: 100px;
+  width: 100%;
+  min-height: 120px;
   padding: 5px;
   font-family: monospace;
   font-size: ${vars.smallFontSize};
@@ -1000,6 +1002,7 @@ const cssTextArea = styled(textarea, `
   background: ${theme.inputBg};
   color: ${theme.inputFg};
   resize: vertical;
+  box-sizing: border-box;
 `);
 
 const cssButton = styled(cssSmallButton, `
