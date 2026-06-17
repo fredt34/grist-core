@@ -381,8 +381,10 @@ export class GristDocImpl extends DisposableWithEvents implements GristDoc {
     this.docInfo = this.docModel.docInfoRow;
 
     // Inject per-document custom CSS into document.head, reactively.
+    // Use subscribe() so it fires immediately with the current value on load,
+    // not just on subsequent changes (addListener only fires on changes).
     this.autoDispose(
-      fromKo(this.docInfo.customCSS).addListener((css) => {
+      subscribe(fromKo(this.docInfo.customCSS), (_use, css) => {
         let styleEl = document.getElementById('grist-custom-doc-css') as HTMLStyleElement | null;
         if (!styleEl) {
           styleEl = document.createElement('style');

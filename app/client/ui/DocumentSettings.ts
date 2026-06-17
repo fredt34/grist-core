@@ -27,6 +27,7 @@ import { select } from "app/client/ui2018/menus";
 import { confirmModal, cssModalButtons, cssModalTitle, cssSpinner, modal } from "app/client/ui2018/modals";
 import { buildCurrencyPicker } from "app/client/widgets/CurrencyPicker";
 import { buildTZAutocomplete } from "app/client/widgets/TZAutocomplete";
+import { textarea } from "app/client/ui/inputs";
 import { EngineCode } from "app/common/DocumentSettings";
 import { commonUrls, GristLoadConfig, PREFERRED_STORAGE_ANCHOR } from "app/common/gristUrls";
 import { not, propertyCompare } from "app/common/gutil";
@@ -64,6 +65,7 @@ export class DocSettingsPage extends Disposable {
   private _timezone = this._docInfo.timezone;
   private _locale: KoSaveableObservable<string> = this._docInfo.documentSettingsJson.prop("locale");
   private _currency: KoSaveableObservable<string | undefined> = this._docInfo.documentSettingsJson.prop("currency");
+  private _customCSS: KoSaveableObservable<string | undefined> = this._docInfo.documentSettingsJson.prop("customCSS");
   private _acceptProposals = Observable.create(
     this,
     Boolean(this._gristDoc.docPageModel.currentDoc.get()?.options?.proposedChanges?.acceptProposals),
@@ -104,6 +106,15 @@ export class DocSettingsPage extends Disposable {
             dom.create(cssCurrencyPicker, fromKo(this._currency), val => this._currency.saveOnly(val),
               { defaultCurrencyLabel: t("Local currency ({{currency}})", { currency: getCurrency(l) }) }),
           ),
+        }),
+        SectionItem({
+          id: "customCSS",
+          name: t("Custom CSS"),
+          description: t("Apply custom styles to this document"),
+          value: cssTextArea(fromKo(this._customCSS) as Observable<string>, {
+            save: (val: string) => this._customCSS.saveOnly(val),
+          }),
+          disabled: isDocOwner ? false : t("Only available to document owners"),
         }),
         SectionItem({
           id: "templateMode",
@@ -976,6 +987,19 @@ const cssFlex = styled("div", `
   display: flex;
   align-items: center;
   gap: 8px;
+`);
+
+const cssTextArea = styled(textarea, `
+  width: var(--admin-select-width);
+  min-height: 100px;
+  padding: 5px;
+  font-family: monospace;
+  font-size: ${vars.smallFontSize};
+  border: 1px solid ${theme.inputBorder};
+  border-radius: 4px;
+  background: ${theme.inputBg};
+  color: ${theme.inputFg};
+  resize: vertical;
 `);
 
 const cssButton = styled(cssSmallButton, `
