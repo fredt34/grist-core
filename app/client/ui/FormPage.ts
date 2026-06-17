@@ -30,7 +30,21 @@ export class FormPage extends Disposable {
       if (!form) { return; }
 
       document.title = `${form.formTitle}${getPageTitleSuffix(getGristConfig())}`;
+
+      // Inject per-document custom CSS at the end of <head>, after all Grist styles.
+      let styleEl = document.getElementById('grist-custom-doc-css') as HTMLStyleElement | null;
+      if (!styleEl) {
+        styleEl = document.createElement('style');
+        styleEl.id = 'grist-custom-doc-css';
+        document.head.appendChild(styleEl);
+      }
+      styleEl.textContent = form.formCustomCSS || '';
     }));
+
+    this.onDispose(() => {
+      const styleEl = document.getElementById('grist-custom-doc-css');
+      if (styleEl) { styleEl.remove(); }
+    });
   }
 
   public buildDom() {

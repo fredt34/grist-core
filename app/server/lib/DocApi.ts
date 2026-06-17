@@ -1499,6 +1499,12 @@ export class DocWorkerApi {
         const formTableId = await getRealTableId(String(section.tableRef), { activeDoc, req });
         const formTitle = section.title || getTableName() || formTableId;
 
+        // Read customCSS from document settings (_grist_DocInfo).
+        const DocInfo = metaTable("_grist_DocInfo");
+        const docInfoRecord = DocInfo.getRecord(1);
+        const docSettings = safeJsonParse(String(docInfoRecord?.documentSettings ?? ''), {}) as Record<string, unknown>;
+        const formCustomCSS = typeof docSettings.customCSS === 'string' ? docSettings.customCSS : undefined;
+
         this._grist.getTelemetry().logEvent(req, "visitedForm", {
           full: {
             docIdDigest: activeDoc.docName,
@@ -1512,6 +1518,7 @@ export class DocWorkerApi {
           formLayoutSpec,
           formTableId,
           formTitle,
+          ...(formCustomCSS ? { formCustomCSS } : {}),
         });
       }),
     );

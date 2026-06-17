@@ -15,6 +15,8 @@ export interface Form {
   formLayoutSpec: string;
   formTitle: string;
   formTableId: string;
+  /** Optional custom CSS from document settings, to be injected into the form page. */
+  formCustomCSS?: string;
 }
 
 /**
