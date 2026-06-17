@@ -16,11 +16,14 @@ export interface DocInfoRec extends IRowModel<"_grist_DocInfo"> {
    * client about transfer job status also).
    */
   attachmentStoreId: modelUtil.KoSaveableObservable<string | undefined>;
+  // Per-document custom CSS string, injected client-side when the document loads.
+  customCSS: modelUtil.KoSaveableObservable<string | undefined>;
 }
 
 export function createDocInfoRec(this: DocInfoRec, docModel: DocModel): void {
   this.documentSettingsJson = jsonObservable(this.documentSettings);
   this.attachmentStoreId = this.documentSettingsJson.prop("attachmentStoreId");
+  this.customCSS = this.documentSettingsJson.prop("customCSS");
   this.defaultViewId = this.autoDispose(ko.pureComputed(() => {
     const tab = docModel.allTabs.at(0);
     return tab ? tab.viewRef() : 0;

@@ -10,6 +10,7 @@ export const DocumentSettings = t.iface([], {
   "engine": t.opt("EngineCode"),
   "attachmentStoreId": t.opt("string"),
   "baseAction": t.opt("DocState"),
+  "customCSS": t.opt("string"),
 });
 
 export const EngineCode = t.lit("python3");

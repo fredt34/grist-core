@@ -17,6 +17,8 @@ export interface DocumentSettings {
   // action to treat as a starting point, e.g. when a fork or
   // copy is made.
   baseAction?: DocState;
+  // Per-document custom CSS, injected client-side when the document loads.
+  customCSS?: string;
 }
 
 /**

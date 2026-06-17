@@ -380,6 +380,23 @@ export class GristDocImpl extends DisposableWithEvents implements GristDoc {
     // Maintain the MetaRowModel for the global document info, including docId and peers.
     this.docInfo = this.docModel.docInfoRow;
 
+    // Inject per-document custom CSS into document.head, reactively.
+    this.autoDispose(
+      fromKo(this.docInfo.customCSS).addListener((css) => {
+        let styleEl = document.getElementById('grist-custom-doc-css') as HTMLStyleElement | null;
+        if (!styleEl) {
+          styleEl = document.createElement('style');
+          styleEl.id = 'grist-custom-doc-css';
+          document.head.appendChild(styleEl);
+        }
+        styleEl.textContent = css || '';
+      })
+    );
+    this.onDispose(() => {
+      const styleEl = document.getElementById('grist-custom-doc-css');
+      if (styleEl) { styleEl.remove(); }
+    });
+
     this.currentUser = Computed.create(this, (use) => {
       return use(this.app.topAppModel.appObs)?.currentUser ?? null;
     });
