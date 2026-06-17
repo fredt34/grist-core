@@ -31,7 +31,7 @@ export class FormPage extends Disposable {
 
       document.title = `${form.formTitle}${getPageTitleSuffix(getGristConfig())}`;
 
-      // Inject per-document custom CSS at the end of <head>, after all Grist styles.
+      // Inject per-document custom CSS at the end of <head>, after all Grist styles. Also applies to Forms.
       let styleEl = document.getElementById('grist-custom-doc-css') as HTMLStyleElement | null;
       if (!styleEl) {
         styleEl = document.createElement('style');

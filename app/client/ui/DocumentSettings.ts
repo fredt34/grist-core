@@ -84,6 +84,8 @@ export class DocSettingsPage extends Disposable {
     const isDocEditor = isOwnerOrEditor(docPageModel.currentDoc.get());
     const isFork = docPageModel.currentDoc.get()?.isFork;
 
+    // Insert CSS mechanism
+
     return cssContainer({ tabIndex: "-1" },
       SectionCard(t("Document settings"), [
         SectionItem({
